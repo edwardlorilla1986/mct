@@ -1,0 +1,69 @@
+[24-Jan-2025 02:14:26 UTC] LibreOffice conversion failed: Convertion Failure! Contact Server Admin:code 127 
+error: sh: /home/eyygsv3j0a44/libreoffice/squashfs-root/AppRun --headless --nologo --nolockcheck -env:UserInstallation=file:///tmp/LibreOfficeUser: No such file or directory
+[24-Jan-2025 02:17:03 UTC] LibreOffice conversion failed: Convertion Failure! Contact Server Admin:code 127 
+error: sh: /home/eyygsv3j0a44/libreoffice/squashfs-root/AppRun --headless --nologo --nolockcheck -env:UserInstallation=file:///tmp/LibreOfficeUser: No such file or directory
+[24-Jan-2025 02:21:20 UTC] LibreOffice conversion failed: Convertion Failure! Contact Server Admin:code 127 
+error: sh: /home/eyygsv3j0a44/libreoffice/squashfs-root/AppRun --headless --nologo --nolockcheck: No such file or directory
+[24-Jan-2025 02:51:17 UTC] LibreOffice Command: /home/eyygsv3j0a44/libreoffice/squashfs-root/AppRun --headless --nologo --nolockcheck -env:UserInstallation=file:///tmp/LibreOfficeUser --convert-to pdf "'/home/eyygsv3j0a44/public_html/components/storage/app/livewire-tmp/fFbFAgw1vxlM8g8ryZNOpv2qN2sOmXlZkH7dTCVu.png'" --outdir "/home/eyygsv3j0a44/public_html/components/storage/app/livewire-tmp"
+[24-Jan-2025 02:51:17 UTC] LibreOffice Output: javaldx: Could not find a Java Runtime Environment!
+Warning: failed to read path from javaldx
+Error: source file could not be loaded
+
+[24-Jan-2025 02:52:25 UTC] LibreOffice Command: /home/eyygsv3j0a44/libreoffice/squashfs-root/AppRun --headless --nologo --nolockcheck -env:UserInstallation=file:///tmp/LibreOfficeUser --convert-to pdf "'/home/eyygsv3j0a44/public_html/components/storage/app/livewire-tmp/6ylGPVvlczp5DRK6N5vUjIASfJ3r4UxQBzmjPXGa.png'" --outdir "/home/eyygsv3j0a44/public_html/components/storage/app/livewire-tmp"
+[24-Jan-2025 02:52:25 UTC] LibreOffice Output: javaldx: Could not find a Java Runtime Environment!
+Warning: failed to read path from javaldx
+Error: source file could not be loaded
+
+[24-Jan-2025 03:03:23 UTC] LibreOffice Command: /home/eyygsv3j0a44/libreoffice/squashfs-root/AppRun --headless --nologo --nolockcheck -env:UserInstallation=file:///tmp/LibreOfficeUser --convert-to pdf "'/home/eyygsv3j0a44/public_html/components/storage/app/livewire-tmp/U4Iy1teF1zjFkbD8USaAdWLUBRbmWFVbIk9cuYOX.png'" --outdir "/home/eyygsv3j0a44/public_html/components/storage/app/livewire-tmp"
+[24-Jan-2025 03:03:23 UTC] LibreOffice Output: javaldx: Could not find a Java Runtime Environment!
+Warning: failed to read path from javaldx
+Error: source file could not be loaded
+
+[24-Jan-2025 03:11:38 UTC] LibreOffice Command: /home/eyygsv3j0a44/libreoffice/squashfs-root/AppRun --headless --nologo --nolockcheck -env:UserInstallation=file:///tmp/LibreOfficeUser --convert-to pdf "'/home/eyygsv3j0a44/public_html/components/storage/app/livewire-tmp/NSLutTlN65w7VuarugDxRWi9meAmQjIXf9dRH9fY.png'" --outdir "/home/eyygsv3j0a44/public_html/components/storage/app/livewire-tmp"
+[24-Jan-2025 03:11:38 UTC] LibreOffice Output: javaldx: Could not find a Java Runtime Environment!
+Warning: failed to read path from javaldx
+Error: source file could not be loaded
+
+[24-Jan-2025 03:48:58 UTC] LibreOffice conversion failed: Convertion Failure! Contact Server Admin:code 77 
+error: javaldx failed!
+Warning: failed to read path from javaldx
+LibreOffice 24.8 - Fatal Error: The application cannot be started.
+User installation could not be completed.
+[24-Jan-2025 03:49:38 UTC] LibreOffice conversion failed: Convertion Failure! Contact Server Admin:code 77 
+error: javaldx failed!
+Warning: failed to read path from javaldx
+LibreOffice 24.8 - Fatal Error: The application cannot be started.
+User installation could not be completed.
+[24-Jan-2025 03:50:19 UTC] LibreOffice conversion failed: Convertion Failure! Contact Server Admin:code 77 
+error: javaldx failed!
+Warning: failed to read path from javaldx
+LibreOffice 24.8 - Fatal Error: The application cannot be started.
+User installation could not be completed.
+[24-Jan-2025 03:51:25 UTC] LibreOffice conversion failed: Convertion Failure! Contact Server Admin:code 77 
+error: javaldx failed!
+Warning: failed to read path from javaldx
+LibreOffice 24.8 - Fatal Error: The application cannot be started.
+User installation could not be completed.
+[24-Jan-2025 03:51:49 UTC] LibreOffice conversion failed: Convertion Failure! Contact Server Admin:code 77 
+error: javaldx failed!
+Warning: failed to read path from javaldx
+LibreOffice 24.8 - Fatal Error: The application cannot be started.
+User installation could not be completed.
+[24-Jan-2025 03:53:53 UTC] LibreOffice conversion failed: Convertion Failure! Contact Server Admin:code 77 
+error: javaldx failed!
+Warning: failed to read path from javaldx
+LibreOffice 24.8 - Fatal Error: The application cannot be started.
+User installation could not be completed.
+[24-Jan-2025 03:54:39 UTC] LibreOffice conversion failed: Convertion Failure! Contact Server Admin:code 77 
+error: javaldx failed!
+Warning: failed to read path from javaldx
+LibreOffice 24.8 - Fatal Error: The application cannot be started.
+User installation could not be completed.
+[24-Jan-2025 03:59:46 UTC] LibreOffice conversion failed: Convertion Failure! Contact Server Admin:code 77 
+error: javaldx failed!
+Warning: failed to read path from javaldx
+LibreOffice 24.8 - Fatal Error: The application cannot be started.
+User installation could not be completed.
+[25-Jan-2025 09:29:46 UTC] PHP Deprecated:  Using ${var} in strings is deprecated, use {$var} instead in /home/eyygsv3j0a44/public_html/components/vendor/dompdf/dompdf/src/Css/Style.php on line 2832
+[25-Jan-2025 09:29:46 UTC] PHP Deprecated:  Using ${var} in strings is deprecated, use {$var} instead in /home/eyygsv3j0a44/public_html/components/vendor/dompdf/dompdf/src/Css/Style.php on line 2834
+[25-Jan-2025 09:29:46 UTC] PHP Deprecated:  Using ${var} in strings is deprecated, use {$var} instead in /home/eyygsv3j0a44/public_html/components/vendor/dompdf/dompdf/src/Css/Style.php on line 2837
