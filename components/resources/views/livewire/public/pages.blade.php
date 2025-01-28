@@ -4,6 +4,18 @@
         <div class="card-body">
 
           @switch($page->tool_name)
+           @case('ai-travel-planner')
+        @livewire('ai-travel-planner')
+        @break
+           @case('ai-personality-quiz-builder')
+        @livewire('ai-personality-quiz-builder')
+        @break
+           @case('ai-name-generator')
+        @livewire('ai-name-generator')
+        @break
+          @case('ai-story-writer')
+        @livewire('ai-story-writer')
+        @break
           @case('seo-content-optimizer')
         @livewire('seo-content-optimizer')
         @break
