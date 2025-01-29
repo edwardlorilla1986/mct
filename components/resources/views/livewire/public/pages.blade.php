@@ -4,6 +4,9 @@
         <div class="card-body">
 
           @switch($page->tool_name)
+           @case('tiktok-downloader')
+        @livewire('tiktok-downloader')
+        @break
           @case('you-tube-downloader')
         @livewire('you-tube-downloader')
         @break
