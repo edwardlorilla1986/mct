@@ -4,6 +4,12 @@
         <div class="card-body">
 
           @switch($page->tool_name)
+          @case('you-tube-downloader')
+        @livewire('you-tube-downloader')
+        @break
+           @case('ai-workout-generator')
+        @livewire('ai-workout-generator')
+        @break
            @case('ai-travel-planner')
         @livewire('ai-travel-planner')
         @break

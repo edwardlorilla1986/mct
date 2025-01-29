@@ -13,7 +13,7 @@ use App\Http\Livewire\Public\Home;
 use App\Http\Livewire\Public\Pages as PublicPage;
 use App\Http\Livewire\Public\Posts as PublicPost;
 use App\Http\Livewire\Public\Tools\ImageCompressor;
-
+use App\Http\Livewire\YouTubeDownloader;
 use App\Http\Livewire\Public\Install\Welcome as SWWelcome;
 use App\Http\Livewire\Public\Install\Requirements as SWRequirements;
 use App\Http\Livewire\Public\Install\Environment as SWDatabase;
@@ -241,7 +241,7 @@ Route::localizedGroup(function () {
 
 	//Home
 	Route::get('/', Home::class)->name('home');
-
+Route::get('/download-video', [YouTubeDownloader::class, 'downloadVideo'])->name('download.video');
 	//Blog
 	try {
 		

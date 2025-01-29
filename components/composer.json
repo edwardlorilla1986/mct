@@ -36,6 +36,8 @@
         "mantas-done/subtitles": "^0.3.10",
         "ncjoes/office-converter": "^1.0",
         "nesbot/carbon": "^2.48",
+        "norkunas/youtube-dl-php": "^2.4",
+        "pira/ytdl": "^1.7",
         "sabberworm/php-css-parser": "^8.4",
         "spatie/array-to-xml": "^2.16",
         "spatie/laravel-image-optimizer": "^1.6",
