@@ -4,6 +4,12 @@
         <div class="card-body">
 
           @switch($page->tool_name)
+          @case('name-predictor')
+        @livewire('name-predictor')
+        @break
+          @case('sudoku')
+        @livewire('sudoku')
+        @break
            @case('image-to-ascii')
         @livewire('image-to-ascii')
         @break
