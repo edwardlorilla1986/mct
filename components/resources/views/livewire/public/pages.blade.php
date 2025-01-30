@@ -4,6 +4,9 @@
         <div class="card-body">
 
           @switch($page->tool_name)
+          @case('fake-user')
+        @livewire('fake-user')
+        @break
            @case('random-joke')
         @livewire('random-joke')
         @break
