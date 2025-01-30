@@ -27,7 +27,13 @@ return [
     | Supported Drivers: "local", "ftp", "sftp", "s3"
     |
     */
-
+    
+   'ffmpeg' => [
+        'binaries' => env('FFMPEG_PATH', '/home/eyygsv3j0a44/bin/ffmpeg'),
+        'ffprobe_binaries' => env('FFPROBE_PATH', '/home/eyygsv3j0a44/bin/ffprobe'),
+        'timeout' => 3600, // 1 hour timeout
+        'threads' => 4,    // Use 4 threads for processing
+    ],
     'disks' => [
 
         'local' => [

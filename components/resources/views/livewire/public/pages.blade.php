@@ -4,6 +4,15 @@
         <div class="card-body">
 
           @switch($page->tool_name)
+           @case('image-to-ascii')
+        @livewire('image-to-ascii')
+        @break
+           @case('random-cocktail')
+        @livewire('random-cocktail')
+        @break
+           @case('video-converter')
+        @livewire('video-converter')
+        @break
            @case('tiktok-downloader')
         @livewire('tiktok-downloader')
         @break

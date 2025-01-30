@@ -37,6 +37,7 @@
         "ncjoes/office-converter": "^1.0",
         "nesbot/carbon": "^2.48",
         "norkunas/youtube-dl-php": "^2.4",
+        "pbmedia/laravel-ffmpeg": "^7.8",
         "pira/ytdl": "^1.7",
         "sabberworm/php-css-parser": "^8.4",
         "spatie/array-to-xml": "^2.16",
