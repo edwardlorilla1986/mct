@@ -4,6 +4,25 @@
         <div class="card-body">
 
           @switch($page->tool_name)
+          
+          @case('url-extractor')
+        @livewire('url-extractor')
+        @break
+          @case('html-select-extractor')
+        @livewire('html-select-extractor')
+        @break
+           @case('json-to-markdown')
+        @livewire('json-to-markdown')
+        @break
+          @case('xml-encoder')
+        @livewire('xml-encoder')
+        @break
+          @case('kanji-explorer')
+        @livewire('kanji-explorer')
+        @break
+          @case('bible-viewer')
+        @livewire('bible-viewer')
+        @break
           @case('place-bear')
         @livewire('place-bear')
         @break
