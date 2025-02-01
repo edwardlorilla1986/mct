@@ -5,11 +5,21 @@
 
           @switch($page->tool_name)
           
-          @case('json-unstringifier')
-        @livewire('json-unstringifier')
+          @case('xml-to-json-converter')
+        @livewire('xml-to-json-converter')
         @break
-          @case('json-stringifier')
-        @livewire('json-stringifier')
+           @case('json-to-xml-converter')
+        @livewire('json-to-xml-converter')
+        @break
+           @case('json-unescaper')
+        @livewire('json-unescaper')
+        @break
+                    @case('json-escaper')
+        @livewire('json-escaper')
+        @break
+
+          @case('advance-json-validator')
+        @livewire('json-validator')
         @break
           @case('json-highlighter')
         @livewire('json-highlighter')
