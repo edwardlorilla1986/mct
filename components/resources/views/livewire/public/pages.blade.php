@@ -4,7 +4,15 @@
         <div class="card-body">
 
           @switch($page->tool_name)
-          
+          @case('json-highlighter')
+        @livewire('json-highlighter')
+        @break
+           @case('title-case-converter')
+        @livewire('title-case-converter')
+        @break
+          @case('random-meal')
+        @livewire('random-meal')
+        @break
           @case('url-extractor')
         @livewire('url-extractor')
         @break
