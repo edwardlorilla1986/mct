@@ -4,7 +4,19 @@
         <div class="card-body">
 
           @switch($page->tool_name)
-          
+         
+ @case('tsv-to-json-converter')
+         @livewire('tsv-to-json-converter')
+        @break
+          @case('json-to-tsv-converter')
+        @livewire('json-to-tsv-converter')
+        @break
+            @case('yaml-to-json-converter')
+        @livewire('yaml-to-json-converter')
+        @break
+           @case('json-to-yaml-converter')
+        @livewire('json-to-yaml-converter')
+        @break
           @case('xml-to-json-converter')
         @livewire('xml-to-json-converter')
         @break
