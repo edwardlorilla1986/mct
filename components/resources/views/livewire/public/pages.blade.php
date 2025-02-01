@@ -5,6 +5,12 @@
 
           @switch($page->tool_name)
           
+           @case('json-to-text-converter')
+          @livewire('json-to-text-converter')
+        @break
+          @case('json-url-decoder')
+          @livewire('json-url-decoder')
+        @break
           @case('json-url-encoder')
           @livewire('json-url-encoder')
         @break
