@@ -5,6 +5,9 @@
 
           @switch($page->tool_name)
           
+          @case('json-unstringifier')
+        @livewire('json-unstringifier')
+        @break
           @case('json-stringifier')
         @livewire('json-stringifier')
         @break
