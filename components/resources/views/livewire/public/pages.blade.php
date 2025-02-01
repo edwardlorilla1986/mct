@@ -4,6 +4,16 @@
         <div class="card-body">
 
           @switch($page->tool_name)
+         
+           @case('json-to-base64-converter')
+          @livewire('json-to-base64-converter')
+        @break
+          @case('json-to-bson-converter')
+         @livewire('json-to-bson-converter')
+        @break
+          @case('csv-to-json-converter')
+         @livewire('csv-to-json-converter')
+        @break
           @case('json-to-csv-converter')
          @livewire('json-to-csv-converter')
         @break
