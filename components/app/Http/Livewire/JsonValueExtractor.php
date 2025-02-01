@@ -4,13 +4,14 @@ namespace App\Http\Livewire;
 
 use Livewire\Component;
 
-class JsonKeyExtractor extends Component
+class JsonValueExtractor extends Component
 {
     public $jsonInput = '';
     public $depth = '*';
     public $separator = "\n";
     public $wrapQuotes = false;
-    public $extractedKeys = '';
+    public $printComplex = true;
+    public $extractedValues = '';
 
     public function updatedJsonInput()
     {
@@ -21,19 +22,19 @@ class JsonKeyExtractor extends Component
                 throw new \Exception('Invalid JSON format');
             }
 
-            // Extract keys based on depth
+            // Extract values based on depth
             $depthLevels = $this->parseDepth();
-            $keys = $this->extractKeys($jsonArray, 1, $depthLevels);
+            $values = $this->extractValues($jsonArray, 1, $depthLevels);
 
-            // Format keys
+            // Format values
             if ($this->wrapQuotes) {
-                $keys = array_map(fn($key) => "\"$key\"", $keys);
+                $values = array_map(fn($val) => "\"$val\"", $values);
             }
 
-            // Join keys with specified separator
-            $this->extractedKeys = implode($this->separator, $keys);
+            // Join values with specified separator
+            $this->extractedValues = implode($this->separator, $values);
         } catch (\Exception $e) {
-            $this->extractedKeys = 'Invalid JSON format';
+            $this->extractedValues = 'Invalid JSON format';
         }
     }
 
@@ -58,33 +59,39 @@ class JsonKeyExtractor extends Component
         return array_unique($parsedLevels);
     }
 
-    private function extractKeys($data, $currentDepth, $depthLevels)
+    private function extractValues($data, $currentDepth, $depthLevels)
     {
-        $keys = [];
+        $values = [];
 
         if (is_array($data)) {
-            foreach ($data as $key => $value) {
+            foreach ($data as $value) {
                 if ($depthLevels === '*' || in_array($currentDepth, $depthLevels)) {
-                    $keys[] = $key;
+                    if (is_array($value)) {
+                        $values[] = $this->printComplex ? "[array]" : "";
+                    } elseif (is_object($value)) {
+                        $values[] = $this->printComplex ? "{object}" : "";
+                    } else {
+                        $values[] = $value;
+                    }
                 }
 
                 if (is_array($value) || is_object($value)) {
-                    $keys = array_merge($keys, $this->extractKeys($value, $currentDepth + 1, $depthLevels));
+                    $values = array_merge($values, $this->extractValues($value, $currentDepth + 1, $depthLevels));
                 }
             }
         }
 
-        return $keys;
+        return $values;
     }
 
     public function clearInput()
     {
         $this->jsonInput = '';
-        $this->extractedKeys = '';
+        $this->extractedValues = '';
     }
 
     public function render()
     {
-        return view('livewire.json-key-extractor');
+        return view('livewire.json-value-extractor');
     }
 }

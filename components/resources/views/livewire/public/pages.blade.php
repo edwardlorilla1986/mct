@@ -4,7 +4,21 @@
         <div class="card-body">
 
           @switch($page->tool_name)
-          
+          @case('json-string-hider')
+          @livewire('json-string-hider')
+        @break
+          @case('json-flattener')
+          @livewire('json-flattener')
+        @break
+         @case('json-array-flattener')
+          @livewire('json-array-flattener')
+        @break
+          @case('json-value-extractor')
+          @livewire('json-value-extractor')
+        @break
+          @case('json-key-extractor')
+          @livewire('json-key-extractor')
+        @break
            @case('json-to-text-converter')
           @livewire('json-to-text-converter')
         @break

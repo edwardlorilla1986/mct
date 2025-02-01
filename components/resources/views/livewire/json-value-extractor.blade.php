@@ -1,7 +1,7 @@
 <div class="container mt-5">
     <div class="card shadow-sm">
         <div class="card-header bg-primary text-white">
-            <h4>JSON Key Extractor - Free Online Tool</h4>
+            <h4>JSON Value Extractor - Free Online Tool</h4>
         </div>
         <div class="card-body">
             <div class="mb-3">
@@ -16,7 +16,7 @@
             </div>
 
             <div class="mb-3">
-                <label class="form-label">Key Separator:</label>
+                <label class="form-label">Value Separator:</label>
                 <select wire:model="separator" class="form-select">
                     <option value="\n">New Line (\n)</option>
                     <option value=", ">Comma (,)</option>
@@ -27,13 +27,18 @@
 
             <div class="form-check mb-3">
                 <input class="form-check-input" type="checkbox" wire:model="wrapQuotes" id="wrapQuotes">
-                <label class="form-check-label" for="wrapQuotes">Wrap Keys in Quotes</label>
+                <label class="form-check-label" for="wrapQuotes">Wrap Values in Quotes</label>
+            </div>
+
+            <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" wire:model="printComplex" id="printComplex">
+                <label class="form-check-label" for="printComplex">Print Complex Values (e.g. "[array]", "{object}")</label>
             </div>
 
             <div class="mb-3">
-                <label class="form-label">Extracted JSON Keys:</label>
+                <label class="form-label">Extracted JSON Values:</label>
                 <div class="alert alert-secondary" role="alert">
-                    <pre class="mb-0">{{ $extractedKeys }}</pre>
+                    <pre class="mb-0">{{ $extractedValues }}</pre>
                 </div>
             </div>
 
