@@ -4,6 +4,10 @@
         <div class="card-body">
 
           @switch($page->tool_name)
+          
+          @case('json-stringifier')
+        @livewire('json-stringifier')
+        @break
           @case('json-highlighter')
         @livewire('json-highlighter')
         @break
