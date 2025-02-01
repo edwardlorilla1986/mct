@@ -4,6 +4,10 @@
         <div class="card-body">
 
           @switch($page->tool_name)
+          
+          @case('json-url-encoder')
+          @livewire('json-url-encoder')
+        @break
           @case('base64-to-json-converter')
           @livewire('base64-to-json-converter')
         @break
