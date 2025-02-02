@@ -4,6 +4,13 @@
         <div class="card-body">
 
           @switch($page->tool_name)
+          
+          @case('json-censor')
+          @livewire('json-censor')
+        @break
+          @case('json-obfuscator')
+          @livewire('json-obfuscator')
+        @break
           @case('json-string-hider')
           @livewire('json-string-hider')
         @break
