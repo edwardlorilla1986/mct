@@ -5,6 +5,9 @@
 
           @switch($page->tool_name)
           
+          @case('json-analyzer')
+          @livewire('json-analyzer')
+        @break
           @case('json-censor')
           @livewire('json-censor')
         @break
