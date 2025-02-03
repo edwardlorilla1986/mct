@@ -5,6 +5,24 @@
 
           @switch($page->tool_name)
           
+          @case('json-to-table')
+          @livewire('json-to-table')
+        @break  
+          @case('form-to-json-converter')
+          @livewire('form-to-json-converter')
+        @break  
+           @case('json-to-form-data')
+          @livewire('json-to-form-data')
+        @break  
+          @case('json-list')
+          @livewire('json-list')
+        @break
+           @case('properties-to-json')
+          @livewire('properties-to-json')
+        @break
+          @case('json-to-properties')
+          @livewire('json-to-properties')
+        @break
           @case('json-analyzer')
           @livewire('json-analyzer')
         @break
