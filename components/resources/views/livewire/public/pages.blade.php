@@ -5,6 +5,18 @@
 
           @switch($page->tool_name)
           
+          @case('toml-to-json')
+          @livewire('toml-to-json')
+        @break 
+          @case('json-to-toml')
+          @livewire('json-to-toml')
+        @break 
+          @case('cson-to-json')
+          @livewire('cson-to-json')
+        @break  
+          @case('json-to-cson')
+          @livewire('json-to-cson')
+        @break  
           @case('json-to-table')
           @livewire('json-to-table')
         @break  
