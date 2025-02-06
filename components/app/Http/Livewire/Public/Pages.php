@@ -21,7 +21,7 @@ use App\Models\Admin\Advertisement;
 use App\Models\Admin\FooterTranslation;
 use App\Models\Admin\Redirect;
 use App\Models\Admin\Sidebar;
-
+use Illuminate\Support\Facades\Cache;
 class Pages extends Component
 {
     public $slug;
@@ -29,18 +29,19 @@ class Pages extends Component
 
     public function mount($slug)
     {
-        try {
-
+         try {
             $this->slug = $slug;
-  
-            $redirectUrl = Redirect::where('old_slug', $this->slug)->first();
+
+            // Cache Redirects for 24 hours to reduce DB load
+            $redirectUrl = Cache::remember("redirect_{$this->slug}", 1440, function () {
+                return Redirect::where('old_slug', $this->slug)->first();
+            });
 
             if ($redirectUrl && $redirectUrl->new_slug) {
                 return redirect()->to($redirectUrl->new_slug);
             }
 
             abort(404);
-
         } catch (\Exception $e) {
             return view('livewire.public.install.welcome')->layout('layouts.install');
         }
@@ -52,8 +53,12 @@ class Pages extends Component
 
         try {
 
-            $page          = PublicPage::where('slug', $this->slug)->where('type', '<>', 'post')->first();
-            $general       = General::first();
+            $page = Cache::remember("page_{$this->slug}", 1440, function () {
+                return PublicPage::where('slug', $this->slug)->where('type', '<>', 'post')->first();
+            });
+            $general = Cache::remember('general_settings', 1440, function () {
+                return General::orderBy('id', 'DESC')->first();
+            });
    
             if (!$page) {
                 abort(404);
@@ -62,11 +67,25 @@ class Pages extends Component
             switch ( $page->type ) {
 
                 case 'tool':
-                        $pageTrans = PublicPage::withTranslation()->translatedIn( app()->getLocale() )->whereTranslation('page_id', $page->id)->where('tool_status', true)->first();
+                        $pageTrans = Cache::remember("pageTrans_{$page->id}_" . app()->getLocale(), 1440, function () use ($page) {
+    return PublicPage::withTranslation()
+                     ->translatedIn(app()->getLocale())
+                     ->whereTranslation('page_id', $page->id)
+                     ->where('tool_status', true)
+                     ->first();
+});
+
                     break;
 
                 default:
-                        $pageTrans = PublicPage::withTranslation()->translatedIn( app()->getLocale() )->whereTranslation('page_id', $page->id)->where('page_status', true)->first();
+                        $pageTrans = Cache::remember("pageTrans_{$page->id}_" . app()->getLocale(), 1440, function () use ($page) {
+    return PublicPage::withTranslation()
+                     ->translatedIn(app()->getLocale())
+                     ->whereTranslation('page_id', $page->id)
+                     ->where('page_status', true)
+                     ->first();
+});
+
                         //$pageTrans = PublicPage::withTranslation()->translatedIn( app()->getLocale() )->whereTranslation('page_id', $page->id)->where('post_status', true)->first();
                     break;
             }
@@ -116,21 +135,26 @@ class Pages extends Component
                                         ->setDescription($description)
                                         ->setUrl($url);
 
-                    $advanced = Advanced::first();
+                    $advanced = Cache::remember('advanced_settings', 1440, function () {
+    return Advanced::first();
+});
 
-                    $recent_posts = PublicPage::where('type', 'post')
-                                        ->where('post_status', true)
-                                        ->orderBy('id', 'DESC')
-                                        ->get()
-                                        ->map(function ($page) {
-                                            $translatedPage = $page->translate( app()->getLocale() );
-                                            if ($translatedPage) {
-                                                $translatedPage->slug           = $page->slug;
-                                                $translatedPage->target         = $page->target;
-                                                $translatedPage->featured_image = $page->featured_image;
-                                            }
-                                            return $translatedPage;
-                                        })->take( Sidebar::first()->tool_count )->filter()->toArray();
+                    $recent_posts = Cache::remember('recent_posts_' . app()->getLocale() . '_' . Sidebar::first()->tool_count, 1440, function () {
+    return PublicPage::where('type', 'post')
+        ->where('post_status', true)
+        ->orderBy('id', 'DESC')
+        ->take(Sidebar::first()->tool_count) // Limit *before* translation
+        ->get()
+        ->map(function ($page) {
+            $translatedPage = $page->translate(app()->getLocale());
+            if ($translatedPage) {
+                $translatedPage->slug = $page->slug;
+                $translatedPage->target = $page->target;
+                $translatedPage->featured_image = $page->featured_image;
+            }
+            return $translatedPage;
+        })->filter()->toArray();
+});
 
                     $popular_tools = PublicPage::where('type', 'tool')
                                         ->where('popular', true)
@@ -146,24 +170,45 @@ class Pages extends Component
                                             }
                                             return $translatedPage;
                                         })->take( Sidebar::first()->tool_count )->filter()->toArray();
+                                        
+                                        $popular_tools = Cache::remember('popular_tools_' . app()->getLocale() . '_' . Sidebar::first()->tool_count, 1440, function () {
+    return PublicPage::where('type', 'tool')
+        ->where('popular', true)
+        ->where('tool_status', true)
+        ->orderBy('id', 'DESC')
+        ->take(Sidebar::first()->tool_count) // Limit *before* translation
+        ->get()
+        ->map(function ($page) {
+            $translatedPage = $page->translate(app()->getLocale());
+            if ($translatedPage) {
+                $translatedPage->slug = $page->slug;
+                $translatedPage->target = $page->target;
+                $translatedPage->custom_tool_link = $page->custom_tool_link;
+            }
+            return $translatedPage;
+        })->filter()->toArray();
+});
 
-                    $related_tools = PublicPage::where('type', 'tool')
-                                        ->where('tool_status', true)
-                                        ->where('category_id', $page->category_id)
-                                        ->where('id', '!=', $page->id)
-                                        ->inRandomOrder()
-                                        ->get()
-                                        ->map(function ($page) {
-                                            $translatedPage = $page->translate( app()->getLocale() );
-                                            if ($translatedPage) {
-                                                $translatedPage->slug             = $page->slug;
-                                                $translatedPage->target           = $page->target;
-                                                $translatedPage->icon_image       = $page->icon_image;
-                                                $translatedPage->custom_tool_link = $page->custom_tool_link;
-                                                return $translatedPage;
-                                            }
-                                            return null;
-                                        })->filter()->take( General::first()->related_tools_count )->toArray();
+                    $related_tools = Cache::remember('related_tools_' . app()->getLocale() . '_' . $page->category_id . '_' . General::first()->related_tools_count, 1440, function () use ($page) {
+    return PublicPage::where('type', 'tool')
+        ->where('tool_status', true)
+        ->where('category_id', $page->category_id)
+        ->where('id', '!=', $page->id)
+        ->inRandomOrder()
+        ->take(General::first()->related_tools_count) // Limit BEFORE translation
+        ->get()
+        ->map(function ($page) {
+            $translatedPage = $page->translate(app()->getLocale());
+            if ($translatedPage) {
+                $translatedPage->slug = $page->slug;
+                $translatedPage->target = $page->target;
+                $translatedPage->icon_image = $page->icon_image;
+                $translatedPage->custom_tool_link = $page->custom_tool_link;
+                return $translatedPage;
+            }
+            return null;
+        })->filter()->toArray();
+});
 
                 return view('livewire.public.pages', [
                     'page'          => $page,

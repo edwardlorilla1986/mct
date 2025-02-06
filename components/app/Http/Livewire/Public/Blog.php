@@ -22,7 +22,7 @@ use App\Models\Admin\FooterTranslation;
 use App\Models\Admin\Redirect;
 use App\Models\Admin\Sidebar;
 use Livewire\WithPagination;
-
+use Illuminate\Support\Facades\Cache;
 class Blog extends Component
 {
     use WithPagination;
@@ -30,9 +30,24 @@ class Blog extends Component
     
     public function render()
     {
-        $pageTrans     = PublicPage::withTranslation()->translatedIn( app()->getLocale() )->where('type', 'post')->where('post_status', true)->orderByTranslation('id', 'DESC')->paginate( General::first()->blog_page_count );
-        $page          = PublicPage::where('type', 'home')->first();
-        $general       = General::orderBy('id', 'DESC')->first();
+        $pageTrans = Cache::remember('page_translations', 30, function () {
+    $blogPageCount = General::first()->blog_page_count; // Fetch only once to reduce DB queries
+
+    return PublicPage::withTranslation()
+                     ->translatedIn(app()->getLocale())
+                     ->where('type', 'post')
+                     ->where('post_status', true)
+                     ->orderByTranslation('id', 'DESC')
+                     ->paginate($blogPageCount);
+});
+        $page = Cache::remember('homepage', 30, function () {
+    return PublicPage::where('type', 'home')->first();
+});
+
+        $general = Cache::remember('general_settings', 30, function () {
+    return General::orderBy('id', 'DESC')->first();
+});
+
 
         if ( !empty($pageTrans) ) {
 
@@ -75,34 +90,46 @@ class Blog extends Component
                                     ->setDescription($description)
                                     ->setUrl($url);
 
-            $recent_posts = PublicPage::where('type', 'post')
-                                ->where('post_status', true)
-                                ->orderBy('id', 'DESC')
-                                ->get()
-                                ->map(function ($page) {
-                                    $translatedPage = $page->translate( app()->getLocale() );
-                                    if ($translatedPage) {
-                                        $translatedPage->slug           = $page->slug;
-                                        $translatedPage->target         = $page->target;
-                                        $translatedPage->featured_image = $page->featured_image;
-                                    }
-                                    return $translatedPage;
-                                })->take( Sidebar::first()->tool_count )->filter()->toArray();
+            $recent_posts = Cache::remember('recent_posts', 30, function () {
+    $limit = Sidebar::first()->tool_count; // Fetch only once to reduce DB queries
 
-            $popular_tools = PublicPage::where('type', 'tool')
-                                ->where('popular', true)
-                                ->where('tool_status', true)
-                                ->orderBy('id', 'DESC')
-                                ->get()
-                                ->map(function ($page) {
-                                    $translatedPage = $page->translate( app()->getLocale() );
-                                    if ($translatedPage) {
-                                        $translatedPage->slug             = $page->slug;
-                                        $translatedPage->target           = $page->target;
-                                        $translatedPage->custom_tool_link = $page->custom_tool_link;
-                                    }
-                                    return $translatedPage;
-                                })->take( Sidebar::first()->tool_count )->filter()->toArray();
+    return PublicPage::where('type', 'post')
+                     ->where('post_status', true)
+                     ->orderBy('id', 'DESC')
+                     ->take($limit) // Apply limit directly in the query to reduce DB load
+                     ->get()
+                     ->map(function ($page) {
+                         $translatedPage = $page->translate(app()->getLocale());
+                         if ($translatedPage) {
+                             $translatedPage->slug           = $page->slug;
+                             $translatedPage->target         = $page->target;
+                             $translatedPage->featured_image = $page->featured_image;
+                         }
+                         return $translatedPage;
+                     })->filter()->toArray();
+});
+
+
+            $popular_tools = Cache::remember('popular_tools', 30, function () {
+    $limit = Sidebar::first()->tool_count; // Fetch only once to reduce DB queries
+
+    return PublicPage::where('type', 'tool')
+                     ->where('popular', true)
+                     ->where('tool_status', true)
+                     ->orderBy('id', 'DESC')
+                     ->take($limit) // Apply limit directly in the query to reduce DB load
+                     ->get()
+                     ->map(function ($page) {
+                         $translatedPage = $page->translate(app()->getLocale());
+                         if ($translatedPage) {
+                             $translatedPage->slug             = $page->slug;
+                             $translatedPage->target           = $page->target;
+                             $translatedPage->custom_tool_link = $page->custom_tool_link;
+                         }
+                         return $translatedPage;
+                     })->filter()->toArray();
+});
+
 
             return view('livewire.public.blog', [
                 'page'      => $page,

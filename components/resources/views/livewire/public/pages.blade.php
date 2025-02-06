@@ -5,6 +5,18 @@
 
           @switch($page->tool_name)
           
+          @case('json-to-ubjson-converter')
+          @livewire('json-to-ubjson-converter')
+        @break 
+          @case('bson-to-json')
+          @livewire('bson-to-json')
+        @break 
+          @case('jsonl-to-json')
+          @livewire('jsonl-to-json')
+        @break 
+          @case('bencode-to-json')
+          @livewire('bencode-to-json')
+        @break 
           @case('toml-to-json')
           @livewire('toml-to-json')
         @break 
