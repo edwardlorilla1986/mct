@@ -3,11 +3,12 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta http-equiv="refresh" content="0.1;url=/" />
         <link rel="shortcut icon" href="{{ \App\Models\Admin\Header::first()->favicon }}">
 
         <title>{{ __('Error 404 (Not Found)') }} - {{ env('APP_NAME') }}</title>
         <meta name="robots" content="follow, noindex"/>
-        
+         
         @if ( \App\Models\Admin\General::first()->page_load )
             <!-- Pace -->
             <script src="{{ asset('assets/js/pace.min.js') }}"></script>

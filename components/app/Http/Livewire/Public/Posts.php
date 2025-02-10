@@ -21,7 +21,7 @@ use App\Models\Admin\Advertisement;
 use App\Models\Admin\FooterTranslation;
 use App\Models\Admin\Redirect;
 use App\Models\Admin\Sidebar;
-
+use Illuminate\Support\Facades\Cache;
 class Posts extends Component
 {
     public $slug;
@@ -51,20 +51,32 @@ class Posts extends Component
     {
 
         try {
-            \Log::error( $this->slug);
 
-            $page          = PublicPost::where('slug', $this->slug)->where('type', 'post')->first();
+           $page = Cache::rememberForever('public_post_' . $this->slug, function () {
+    return PublicPost::where('slug', $this->slug)
+                     ->where('type', 'post')
+                     ->first();
+});
             $general       = General::first();
    
             if (!$page) {
                 abort(404);
             }
+$pageTrans = Cache::rememberForever('public_post_translation_' . $page->id . '_' . 'en' , function () use ($page) {
+    return PublicPost::withTranslation()
+        ->translatedIn('en')
+        ->whereTranslation('page_id', $page->id)
+        ->where('post_status', true)
+        ->first();
+});
 
-            $pageTrans = PublicPost::withTranslation()->translatedIn( app()->getLocale() )->whereTranslation('page_id', $page->id)->where('post_status', true)->first();
+
+\Log::info($pageTrans);
+
         
             if ( !empty($pageTrans) ) {
 
-                    $url = localization()->getLocalizedURL(app()->getLocale(), $this->slug, [], false);
+                    $url = localization()->getLocalizedURL('en', $this->slug, [], false);
                     $image = $pageTrans->featured_image;
                     $name = config('app.name');
 
@@ -114,7 +126,7 @@ class Posts extends Component
                                         ->orderBy('id', 'DESC')
                                         ->get()
                                         ->map(function ($page) {
-                                            $translatedPage = $page->translate( app()->getLocale() );
+                                            $translatedPage = $page->translate( 'en' );
                                             if ($translatedPage) {
                                                 $translatedPage->slug           = $page->slug;
                                                 $translatedPage->target         = $page->target;
@@ -129,7 +141,7 @@ class Posts extends Component
                                         ->orderBy('id', 'DESC')
                                         ->get()
                                         ->map(function ($page) {
-                                            $translatedPage = $page->translate( app()->getLocale() );
+                                            $translatedPage = $page->translate( 'en' );
                                             if ($translatedPage) {
                                                 $translatedPage->slug             = $page->slug;
                                                 $translatedPage->target           = $page->target;
@@ -155,7 +167,7 @@ class Posts extends Component
                     'menus'         => Menu::with('children')->where(['parent_id' => 'id'])->orderBy('sort','ASC')->get()->toArray(),
                     'header'        => Header::first(),
                     'advanced'      => $advanced,
-                    'footer'        => FooterTranslation::where('locale', app()->getLocale())->first(),
+                    'footer'        => FooterTranslation::where('locale', 'en')->first(),
                     'socials'       => Social::orderBy('id', 'ASC')->get()->toArray(),
                     'notice'        => Gdpr::first()
                 ]);
@@ -163,6 +175,7 @@ class Posts extends Component
             } else abort(404);
 
         } catch (\Exception $e) {
+            \Log::error('Error loading page: ' . $this->slug . "locale" .app()->getLocale(), ['exception' => $e]);
             abort(404);
         }
 

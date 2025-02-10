@@ -101,8 +101,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
          <div class="page">
 
-            <x-public.navbar :header="$header" :siteTitle="$siteTitle" :menus="$menus" :general="$general" />
-
+           <x-public.navbar :header="$header" :siteTitle="$siteTitle" :menus="$menus" :general="$general" />
             <!-- Begin::page-wrapper -->
             <div class="page-wrapper">
                   <!-- Begin::page-content -->
@@ -145,8 +144,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                                           <x-public.advertisement.area1 :advertisement="$advertisement" />
                                         @endif
 
-                                        <h1 class="display-5 fw-normal">{{ __($pageTrans->title) }}</h1>
-                                        <h2 class="fw-normal">{{ __($pageTrans->subtitle) }}</h2>
+                                        <h1 class="display-5 fw-normal">{{ __($pageTrans->title) ? __($pageTrans->title) : $pageTrans->translations[0]->title  }}</h1>
+                                        <h2 class="fw-normal">{{ __($pageTrans->subtitle) ?  __($pageTrans->subtitle) :  $pageTrans->translations[0]->subtitle  }}</h2>
 
                                         @if ( $page->ads_status && $advertisement->area2_status && $advertisement->area2 != null )
                                           <x-public.advertisement.area2 :advertisement="$advertisement" />
@@ -187,7 +186,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                                                 <x-public.advertisement.area4 :advertisement="$advertisement" />
                                               @endif
 
-                                              {!! $pageTrans->description !!}
+                                              {!! $pageTrans->description ? $pageTrans->description : $pageTrans->translations[0]->description   !!}
 
                                               @if ( $page->ads_status && $advertisement->area5_status && $advertisement->area5 != null )
                                                 <x-public.advertisement.area5 :advertisement="$advertisement" />

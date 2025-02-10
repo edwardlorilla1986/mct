@@ -30,7 +30,7 @@ class Blog extends Component
     
     public function render()
     {
-        $pageTrans = Cache::remember('page_translations', 30, function () {
+        $pageTrans = Cache::remember('page_translations'. app()->getLocale(), 1440, function () {
     $blogPageCount = General::first()->blog_page_count; // Fetch only once to reduce DB queries
 
     return PublicPage::withTranslation()
@@ -40,11 +40,11 @@ class Blog extends Component
                      ->orderByTranslation('id', 'DESC')
                      ->paginate($blogPageCount);
 });
-        $page = Cache::remember('homepage', 30, function () {
+        $page = Cache::remember('homepage'. app()->getLocale(), 1440, function () {
     return PublicPage::where('type', 'home')->first();
 });
 
-        $general = Cache::remember('general_settings', 30, function () {
+        $general = Cache::remember('general_settings'. app()->getLocale(), 30, function () {
     return General::orderBy('id', 'DESC')->first();
 });
 
@@ -90,7 +90,7 @@ class Blog extends Component
                                     ->setDescription($description)
                                     ->setUrl($url);
 
-            $recent_posts = Cache::remember('recent_posts', 30, function () {
+            $recent_posts = Cache::remember('recent_posts'. app()->getLocale(), 30, function () {
     $limit = Sidebar::first()->tool_count; // Fetch only once to reduce DB queries
 
     return PublicPage::where('type', 'post')
@@ -110,7 +110,7 @@ class Blog extends Component
 });
 
 
-            $popular_tools = Cache::remember('popular_tools', 30, function () {
+            $popular_tools = Cache::remember('popular_tools'. app()->getLocale(), 30, function () {
     $limit = Sidebar::first()->tool_count; // Fetch only once to reduce DB queries
 
     return PublicPage::where('type', 'tool')

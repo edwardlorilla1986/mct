@@ -53,10 +53,10 @@ class Pages extends Component
 
         try {
 
-            $page = Cache::remember("page_{$this->slug}", 1440, function () {
+            $page = Cache::rememberForever("page_{$this->slug}", function () {
                 return PublicPage::where('slug', $this->slug)->where('type', '<>', 'post')->first();
             });
-            $general = Cache::remember('general_settings', 1440, function () {
+            $general = Cache::remember('general_settings' . $this->slug , 1440, function () {
                 return General::orderBy('id', 'DESC')->first();
             });
    
@@ -67,7 +67,7 @@ class Pages extends Component
             switch ( $page->type ) {
 
                 case 'tool':
-                        $pageTrans = Cache::remember("pageTrans_{$page->id}_" . app()->getLocale(), 1440, function () use ($page) {
+                        $pageTrans = Cache::rememberForever("pageTrans_{$page->id}_" . app()->getLocale(), function () use ($page) {
     return PublicPage::withTranslation()
                      ->translatedIn(app()->getLocale())
                      ->whereTranslation('page_id', $page->id)
@@ -78,9 +78,9 @@ class Pages extends Component
                     break;
 
                 default:
-                        $pageTrans = Cache::remember("pageTrans_{$page->id}_" . app()->getLocale(), 1440, function () use ($page) {
+                        $pageTrans = Cache::rememberForever("pageTrans_{$page->id}_" . "en", function () use ($page) {
     return PublicPage::withTranslation()
-                     ->translatedIn(app()->getLocale())
+                     ->translatedIn("en")
                      ->whereTranslation('page_id', $page->id)
                      ->where('page_status', true)
                      ->first();
@@ -92,7 +92,7 @@ class Pages extends Component
         
             if ( !empty($pageTrans) ) {
 
-                    $url = localization()->getLocalizedURL(app()->getLocale(), $this->slug, [], false);
+                    $url = localization()->getLocalizedURL("en", $this->slug, [], false);
                     $image = $pageTrans->featured_image;
                     $name = config('app.name');
 
@@ -135,18 +135,18 @@ class Pages extends Component
                                         ->setDescription($description)
                                         ->setUrl($url);
 
-                    $advanced = Cache::remember('advanced_settings', 1440, function () {
+                    $advanced = Cache::remember('advanced_settings'. $this->slug, 1440, function () {
     return Advanced::first();
 });
 
-                    $recent_posts = Cache::remember('recent_posts_' . app()->getLocale() . '_' . Sidebar::first()->tool_count, 1440, function () {
+                    $recent_posts = Cache::remember('recent_posts_' . "en" . '_' . Sidebar::first()->tool_count, 1440, function () {
     return PublicPage::where('type', 'post')
         ->where('post_status', true)
         ->orderBy('id', 'DESC')
         ->take(Sidebar::first()->tool_count) // Limit *before* translation
         ->get()
         ->map(function ($page) {
-            $translatedPage = $page->translate(app()->getLocale());
+            $translatedPage = $page->translate("en");
             if ($translatedPage) {
                 $translatedPage->slug = $page->slug;
                 $translatedPage->target = $page->target;
@@ -162,7 +162,7 @@ class Pages extends Component
                                         ->orderBy('id', 'DESC')
                                         ->get()
                                         ->map(function ($page) {
-                                            $translatedPage = $page->translate( app()->getLocale() );
+                                            $translatedPage = $page->translate( "en" );
                                             if ($translatedPage) {
                                                 $translatedPage->slug             = $page->slug;
                                                 $translatedPage->target           = $page->target;
@@ -171,7 +171,7 @@ class Pages extends Component
                                             return $translatedPage;
                                         })->take( Sidebar::first()->tool_count )->filter()->toArray();
                                         
-                                        $popular_tools = Cache::remember('popular_tools_' . app()->getLocale() . '_' . Sidebar::first()->tool_count, 1440, function () {
+                                        $popular_tools = Cache::remember('popular_tools_' . "en" . '_' . Sidebar::first()->tool_count, 1440, function () {
     return PublicPage::where('type', 'tool')
         ->where('popular', true)
         ->where('tool_status', true)
@@ -179,7 +179,7 @@ class Pages extends Component
         ->take(Sidebar::first()->tool_count) // Limit *before* translation
         ->get()
         ->map(function ($page) {
-            $translatedPage = $page->translate(app()->getLocale());
+            $translatedPage = $page->translate("en");
             if ($translatedPage) {
                 $translatedPage->slug = $page->slug;
                 $translatedPage->target = $page->target;

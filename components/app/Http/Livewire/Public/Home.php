@@ -31,11 +31,11 @@ class Home extends Component
 
         try {
 
-            $pageTrans = Cache::remember('homepage_translation', 1440 , function () {
+            $pageTrans = Cache::remember('homepage_translation' . app()->getLocale(), 1440 , function () {
                 return PublicPage::withTranslation()->translatedIn(app()->getLocale())->where('type', 'home')->first();
             });
 
-            $general = Cache::remember('general_settings', 1440 , function () {
+            $general = Cache::remember('general_settings'. app()->getLocale(), 1440 , function () {
                 return General::first();
             });
 
@@ -81,7 +81,7 @@ class Home extends Component
                                 ->setDescription($description)
                                 ->setUrl($url);
 
-            $tool_with_categories = Cache::remember('tool_with_categories', 1440 , function () {
+            $tool_with_categories = Cache::rememberForever('tool_with_categories'. app()->getLocale() , function () {
     return PageCategory::with(['pages' => function ($query) {
         $query->withTranslation(app()->getLocale());
     }])->orderBy('sort', 'ASC')->get()
@@ -102,7 +102,7 @@ class Home extends Component
 });
 
 
-            $tools = Cache::remember('all_tools', 1440 , function () {
+            $tools = Cache::rememberForever('all_tools'. app()->getLocale() , function () {
     return PublicPage::where('type', 'tool')
                      ->where('tool_status', true)
                      ->orderBy('position', 'ASC')
@@ -113,7 +113,7 @@ class Home extends Component
 });
 
 
-            $recent_posts = Cache::remember('recent_posts', 1440 , function () {
+            $recent_posts = Cache::remember('recent_posts'. app()->getLocale(), 1440 , function () {
     $limit = Sidebar::first()->tool_count; // Get the count only once
 
     return PublicPage::where('type', 'post')
@@ -133,7 +133,7 @@ class Home extends Component
 });
 
 
-            $popular_tools = Cache::remember('popular_tools', 1440 , function () {
+            $popular_tools = Cache::remember('popular_tools'. app()->getLocale(), 1440 , function () {
     $limit = Sidebar::first()->tool_count; // Get the count only once
 
     return PublicPage::where('type', 'tool')
@@ -154,16 +154,14 @@ class Home extends Component
 });
 
 
-            $page = Cache::remember('homepage', 1440 , function () {
+            $page = Cache::remember('homepage'. app()->getLocale(), 1440 , function () {
     return PublicPage::where('type', 'home')->first();
 });
             
-            $advertisement = Cache::remember('advertisement', 1440 , function () {
-    return Advertisement::first();
-});
+            $advertisement = Advertisement::first();
 
 
-            $advanced = Cache::remember('advanced_settings', 1440 , function () {
+            $advanced = Cache::remember('advanced_settings'. app()->getLocale(), 1440 , function () {
     return Advanced::first();
 });
 

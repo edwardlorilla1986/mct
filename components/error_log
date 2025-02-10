@@ -85,3 +85,16 @@ Stack trace:
 #17 [internal function]: Illuminate\Foundation\Bootstrap\HandleExceptions->handleShutdown()
 #18 {main}
   thrown in /home/eyygsv3j0a44/public_html/components/vendor/facade/ignition/src/SolutionProviders/MergeConflictSolutionProvider.php on line 52
+[10-Feb-2025 03:28:14 UTC] PHP Fatal error:  Allowed memory size of 134217728 bytes exhausted (tried to allocate 20480 bytes) in /home/eyygsv3j0a44/public_html/components/vendor/laravel/framework/src/Illuminate/Database/Connection.php on line 375
+[10-Feb-2025 03:28:14 UTC] PHP Fatal error:  Allowed memory size of 134217728 bytes exhausted (tried to allocate 32768 bytes) in /home/eyygsv3j0a44/public_html/components/vendor/symfony/error-handler/Error/FatalError.php on line 1
+[10-Feb-2025 03:48:21 UTC] PHP Fatal error:  Allowed memory size of 134217728 bytes exhausted (tried to allocate 20480 bytes) in /home/eyygsv3j0a44/public_html/components/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Model.php on line 1485
+[10-Feb-2025 03:48:21 UTC] PHP Fatal error:  Allowed memory size of 134217728 bytes exhausted (tried to allocate 20480 bytes) in /home/eyygsv3j0a44/public_html/components/vendor/nunomaduro/collision/src/Writer.php on line 101
+[10-Feb-2025 03:51:06 UTC] PHP Fatal error:  Allowed memory size of 134217728 bytes exhausted (tried to allocate 20480 bytes) in /home/eyygsv3j0a44/public_html/components/vendor/laravel/framework/src/Illuminate/Database/Connection.php on line 375
+[10-Feb-2025 03:51:06 UTC] PHP Fatal error:  Allowed memory size of 134217728 bytes exhausted (tried to allocate 20480 bytes) in /home/eyygsv3j0a44/public_html/components/vendor/symfony/error-handler/Error/FatalError.php on line 14
+[10-Feb-2025 04:00:38 UTC] PHP Fatal error:  Allowed memory size of 134217728 bytes exhausted (tried to allocate 20480 bytes) in /home/eyygsv3j0a44/public_html/components/vendor/laravel/framework/src/Illuminate/Database/Connection.php on line 375
+[10-Feb-2025 04:00:38 UTC] PHP Fatal error:  Allowed memory size of 134217728 bytes exhausted (tried to allocate 65536 bytes) in /home/eyygsv3j0a44/public_html/components/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php on line 222
+[10-Feb-2025 05:48:50 UTC] PHP Fatal error:  Allowed memory size of 134217728 bytes exhausted (tried to allocate 24576 bytes) in /home/eyygsv3j0a44/public_html/components/vendor/laravel/framework/src/Illuminate/Database/Connection.php on line 373
+[10-Feb-2025 05:48:50 UTC] PHP Fatal error:  Allowed memory size of 134217728 bytes exhausted (tried to allocate 20480 bytes) in /home/eyygsv3j0a44/public_html/components/vendor/nunomaduro/collision/src/Writer.php on line 130
+[10-Feb-2025 05:48:50 UTC] PHP Fatal error:  Allowed memory size of 134217728 bytes exhausted (tried to allocate 24576 bytes) in Unknown on line 0
+[10-Feb-2025 05:51:34 UTC] PHP Fatal error:  Allowed memory size of 134217728 bytes exhausted (tried to allocate 16384 bytes) in /home/eyygsv3j0a44/public_html/components/vendor/laravel/framework/src/Illuminate/Database/Connection.php on line 373
+[10-Feb-2025 05:51:34 UTC] PHP Fatal error:  Allowed memory size of 134217728 bytes exhausted (tried to allocate 65536 bytes) in /home/eyygsv3j0a44/public_html/components/vendor/symfony/error-handler/Error/FatalError.php on line 14
