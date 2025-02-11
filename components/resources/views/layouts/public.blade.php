@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="shortcut icon" href="{{ $header->favicon }}">
+        <link rel="shortcut icon" href="{{ $header?->favicon }}">
 
         {!! SEO::generate() !!}
 
@@ -182,7 +182,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                                                 </div>
                                               @endif
 
-                                              @if ( $page->ads_status && $advertisement->area4_status && $advertisement->area4 != null )
+                                              @if ($page->ads_status && isset($advertisement) && isset($advertisement->area4_status) && $advertisement->area4 != null)
                                                 <x-public.advertisement.area4 :advertisement="$advertisement" />
                                               @endif
 

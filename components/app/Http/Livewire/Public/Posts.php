@@ -33,7 +33,7 @@ class Posts extends Component
 
             $this->slug = $slug;
   
-            $redirectUrl = Redirect::where('old_slug', $this->slug)->first();
+            $redirectUrl = Redirect::where('old_slug', $this->slug)->firstOrFail();
 
             if ($redirectUrl && $redirectUrl->new_slug) {
                 return redirect()->to($redirectUrl->new_slug);
@@ -50,14 +50,13 @@ class Posts extends Component
     public function render()
     {
 
-        try {
-
            $page = Cache::rememberForever('public_post_' . $this->slug, function () {
     return PublicPost::where('slug', $this->slug)
                      ->where('type', 'post')
-                     ->first();
+                     ->firstOrFail();
 });
-            $general       = General::first();
+\Log::info(1);
+            $general       = General::firstOrFail();
    
             if (!$page) {
                 abort(404);
@@ -67,11 +66,9 @@ $pageTrans = Cache::rememberForever('public_post_translation_' . $page->id . '_'
         ->translatedIn('en')
         ->whereTranslation('page_id', $page->id)
         ->where('post_status', true)
-        ->first();
+        ->firstOrFail();
 });
-
-
-\Log::info($pageTrans);
+\Log::info(2);
 
         
             if ( !empty($pageTrans) ) {
@@ -119,65 +116,81 @@ $pageTrans = Cache::rememberForever('public_post_translation_' . $page->id . '_'
                                         ->setDescription($description)
                                         ->setUrl($url);
 
-                    $advanced = Advanced::first();
+                    $advanced = Advanced::firstOrFail();
+\Log::info(3);
+         $sidebarCount = Sidebar::firstOrFail()->tool_count; // Cache the sidebar tool count to avoid multiple DB calls           
+$recent_posts = [];
 
-                    $recent_posts = PublicPost::where('type', 'post')
-                                        ->where('post_status', true)
-                                        ->orderBy('id', 'DESC')
-                                        ->get()
-                                        ->map(function ($page) {
-                                            $translatedPage = $page->translate( 'en' );
-                                            if ($translatedPage) {
-                                                $translatedPage->slug           = $page->slug;
-                                                $translatedPage->target         = $page->target;
-                                                $translatedPage->featured_image = $page->featured_image;
-                                            }
-                                            return $translatedPage;
-                                        })->take( Sidebar::first()->tool_count )->filter()->toArray();
+PublicPost::where('type', 'post')
+    ->where('post_status', true)
+    ->orderBy('id', 'DESC')
+    ->chunk(100, function ($posts) use (&$recent_posts, $sidebarCount) {
+        foreach ($posts as $page) {
+            $translatedPage = $page->translate('en');
+            if ($translatedPage) {
+                $translatedPage->slug = $page->slug;
+                $translatedPage->target = $page->target;
+                $translatedPage->featured_image = $page->featured_image;
+                $recent_posts[] = $translatedPage;
+            }
+            if (count($recent_posts) >= $sidebarCount) {
+                return false; // Stop when enough records are collected
+            }
+        }
+    });
 
-                    $popular_tools = PublicPost::where('type', 'tool')
-                                        ->where('popular', true)
-                                        ->where('tool_status', true)
-                                        ->orderBy('id', 'DESC')
-                                        ->get()
-                                        ->map(function ($page) {
-                                            $translatedPage = $page->translate( 'en' );
-                                            if ($translatedPage) {
-                                                $translatedPage->slug             = $page->slug;
-                                                $translatedPage->target           = $page->target;
-                                                $translatedPage->custom_tool_link = $page->custom_tool_link;
-                                            }
-                                            return $translatedPage;
-                                        })->take( Sidebar::first()->tool_count )->filter()->toArray();
+$recent_posts = array_filter($recent_posts); // Remove null values
+\Log::info(4);
+                  
+$popular_tools = [];
 
+PublicPost::where('type', 'tool')
+    ->where('popular', true)
+    ->where('tool_status', true)
+    ->orderBy('id', 'DESC')
+    ->chunk(100, function ($tools) use (&$popular_tools, $sidebarCount) {
+        foreach ($tools as $page) {
+            $translatedPage = $page->translate('en');
+            if ($translatedPage) {
+                $translatedPage->slug = $page->slug;
+                $translatedPage->target = $page->target;
+                $translatedPage->custom_tool_link = $page->custom_tool_link;
+                $popular_tools[] = $translatedPage;
+            }
+            if (count($popular_tools) >= $sidebarCount) {
+                return false; // Stop when enough records are collected
+            }
+        }
+    });
+
+$popular_tools = array_filter($popular_tools); // Remove null values
+
+                \Log::info("!!!");
                 return view('livewire.public.posts', [
                     'page'          => $page,
                     'general'       => $general,
-                    'related_tools' => PublicPost::where('category_id', $page->category_id)->where('id', '!=', $page->id)->where('tool_status', true)->inRandomOrder()->take( General::first()->related_tools_count )->get()->toArray()
+                    'related_tools' => PublicPost::where('category_id', $page->category_id)->where('id', '!=', $page->id)->where('tool_status', true)->inRandomOrder()->take( General::firstOrFail()->related_tools_count )->get()->toArray()
                 ])->layout('layouts.public', [
                     'page'          => $page,
                     'pageTrans'     => $pageTrans,
                     'general'       => $general,
-                    'profile'       => User::with('user_socials')->where('is_admin', true)->first(),
-                    'advertisement' => Advertisement::first(),
-                    'sidebar'       => Sidebar::first(),
+                    'profile'       => User::with('user_socials')->where('is_admin', true)->firstOrFail(),
+                    'advertisement' => Advertisement::firstOrFail(),
+                    'sidebar'       => Sidebar::firstOrFail(),
                     'recent_posts'  => $recent_posts,
                     'popular_tools' => $popular_tools,
                     'siteTitle'     => env('APP_NAME'),
                     'menus'         => Menu::with('children')->where(['parent_id' => 'id'])->orderBy('sort','ASC')->get()->toArray(),
-                    'header'        => Header::first(),
+                    'header'        => Header::firstOrFail(),
                     'advanced'      => $advanced,
-                    'footer'        => FooterTranslation::where('locale', 'en')->first(),
+                    'footer'        => FooterTranslation::where('locale', 'en')->firstOrFail(),
                     'socials'       => Social::orderBy('id', 'ASC')->get()->toArray(),
-                    'notice'        => Gdpr::first()
+                    'notice'        => Gdpr::firstOrFail()
                 ]);
             
             } else abort(404);
 
-        } catch (\Exception $e) {
-            \Log::error('Error loading page: ' . $this->slug . "locale" .app()->getLocale(), ['exception' => $e]);
-            abort(404);
-        }
+        
 
     }
 

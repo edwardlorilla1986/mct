@@ -102,56 +102,78 @@ class Home extends Component
 });
 
 
-            $tools = Cache::rememberForever('all_tools'. app()->getLocale() , function () {
-    return PublicPage::where('type', 'tool')
-                     ->where('tool_status', true)
-                     ->orderBy('position', 'ASC')
-                     ->get()
-                     ->map(function ($page) {
-                         return $page->translate(app()->getLocale());
-                     })->filter()->toArray();
+            $tools = Cache::rememberForever('all_tools' . app()->getLocale(), function () {
+    $tools = [];
+
+    PublicPage::where('type', 'tool')
+        ->where('tool_status', true)
+        ->orderBy('position', 'ASC')
+        ->chunk(100, function ($pages) use (&$tools) {
+            foreach ($pages as $page) {
+                $translatedPage = $page->translate(app()->getLocale());
+                if ($translatedPage) {
+                    $tools[] = $translatedPage;
+                }
+            }
+        });
+
+    return array_filter($tools);
 });
 
 
-            $recent_posts = Cache::remember('recent_posts'. app()->getLocale(), 1440 , function () {
-    $limit = Sidebar::first()->tool_count; // Get the count only once
 
-    return PublicPage::where('type', 'post')
-                     ->where('post_status', true)
-                     ->orderBy('id', 'DESC')
-                     ->take($limit) // Apply limit directly in the query to reduce DB load
-                     ->get()
-                     ->map(function ($page) {
-                         $translatedPage = $page->translate(app()->getLocale());
-                         if ($translatedPage) {
-                             $translatedPage->slug           = $page->slug;
-                             $translatedPage->target         = $page->target;
-                             $translatedPage->featured_image = $page->featured_image;
-                         }
-                         return $translatedPage;
-                     })->filter()->toArray();
+            $recent_posts = Cache::remember('recent_posts' . app()->getLocale(), 1440, function () {
+    $limit = Sidebar::first()->tool_count; // Fetch only once
+    $recent_posts = [];
+
+    PublicPage::where('type', 'post')
+        ->where('post_status', true)
+        ->orderBy('id', 'DESC')
+        ->chunk(100, function ($pages) use (&$recent_posts, $limit) {
+            foreach ($pages as $page) {
+                $translatedPage = $page->translate(app()->getLocale());
+                if ($translatedPage) {
+                    $translatedPage->slug = $page->slug;
+                    $translatedPage->target = $page->target;
+                    $translatedPage->featured_image = $page->featured_image;
+                    $recent_posts[] = $translatedPage;
+                }
+                if (count($recent_posts) >= $limit) {
+                    return false; // Stop when enough records are collected
+                }
+            }
+        });
+
+    return array_filter($recent_posts);
 });
 
 
-            $popular_tools = Cache::remember('popular_tools'. app()->getLocale(), 1440 , function () {
-    $limit = Sidebar::first()->tool_count; // Get the count only once
+            $popular_tools = Cache::remember('popular_tools' . app()->getLocale(), 1440, function () {
+    $limit = Sidebar::first()->tool_count; // Fetch once
+    $popular_tools = [];
 
-    return PublicPage::where('type', 'tool')
-                     ->where('popular', true)
-                     ->where('tool_status', true)
-                     ->orderBy('id', 'DESC')
-                     ->take($limit) // Apply limit directly in the query to reduce DB load
-                     ->get()
-                     ->map(function ($page) {
-                         $translatedPage = $page->translate(app()->getLocale());
-                         if ($translatedPage) {
-                             $translatedPage->slug             = $page->slug;
-                             $translatedPage->target           = $page->target;
-                             $translatedPage->custom_tool_link = $page->custom_tool_link;
-                         }
-                         return $translatedPage;
-                     })->filter()->toArray();
+    PublicPage::where('type', 'tool')
+        ->where('popular', true)
+        ->where('tool_status', true)
+        ->orderBy('id', 'DESC')
+        ->chunk(100, function ($tools) use (&$popular_tools, $limit) {
+            foreach ($tools as $page) {
+                $translatedPage = $page->translate(app()->getLocale());
+                if ($translatedPage) {
+                    $translatedPage->slug = $page->slug;
+                    $translatedPage->target = $page->target;
+                    $translatedPage->custom_tool_link = $page->custom_tool_link;
+                    $popular_tools[] = $translatedPage;
+                }
+                if (count($popular_tools) >= $limit) {
+                    return false; // Stop when we reach the required limit
+                }
+            }
+        });
+
+    return array_filter($popular_tools);
 });
+
 
 
             $page = Cache::remember('homepage'. app()->getLocale(), 1440 , function () {
