@@ -33,7 +33,7 @@ class Pages extends Component
             $this->slug = $slug;
 
             // Cache Redirects for 24 hours to reduce DB load
-            $redirectUrl = Cache::remember("redirect_{$this->slug}", 1440, function () {
+            $redirectUrl = Cache::remember("redirect_{$this->slug}" . app()->getLocale(), 1440, function () {
                 return Redirect::where('old_slug', $this->slug)->first();
             });
 
@@ -53,10 +53,10 @@ class Pages extends Component
 
         try {
 
-            $page = Cache::rememberForever("page_{$this->slug}", function () {
+            $page = Cache::rememberForever("page_{$this->slug}". app()->getLocale(), function () {
                 return PublicPage::where('slug', $this->slug)->where('type', '<>', 'post')->first();
             });
-            $general = Cache::remember('general_settings' . $this->slug , 1440, function () {
+            $general = Cache::remember('general_settings' . $this->slug . app()->getLocale() , 1440, function () {
                 return General::orderBy('id', 'DESC')->first();
             });
    
@@ -113,7 +113,7 @@ class Pages extends Component
                     SEOMeta::setTitle($title . $siteName);
                     SEOMeta::setDescription($description);
                     SEOMeta::setCanonical($url);
-
+                  
                     if ( $pageTrans->robots_meta ) {
                         SEOMeta::addMeta('robots', 'follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large', 'name');
                     }
@@ -135,7 +135,7 @@ class Pages extends Component
                                         ->setDescription($description)
                                         ->setUrl($url);
 
-                    $advanced = Cache::remember('advanced_settings'. $this->slug, 1440, function () {
+                    $advanced = Cache::remember('advanced_settings'. $this->slug  .app()->getLocale(), 1440, function () {
     return Advanced::first();
 });
 
@@ -209,7 +209,6 @@ class Pages extends Component
             return null;
         })->filter()->toArray();
 });
-
                 return view('livewire.public.pages', [
                     'page'          => $page,
                     'general'       => $general,

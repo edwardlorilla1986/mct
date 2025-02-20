@@ -55,9 +55,17 @@ class Posts extends Component
                      ->where('type', 'post')
                      ->firstOrFail();
 });
-\Log::info(1);
             $general       = General::firstOrFail();
-   
+            if ($page->custom_tool_link) {
+                $keywordsArray = array_map('trim', explode(',', $page->custom_tool_link)); 
+                SEOMeta::addKeyword($keywordsArray);
+                 SEOMeta::addMeta('article:section', $page->custom_tool_link, 'property');
+            }
+if ($page->updated_at) {
+                SEOMeta::addMeta('article:published_time', $page->updated_at->toW3CString(), 'property');
+            }
+
+  
             if (!$page) {
                 abort(404);
             }
@@ -68,9 +76,6 @@ $pageTrans = Cache::rememberForever('public_post_translation_' . $page->id . '_'
         ->where('post_status', true)
         ->firstOrFail();
 });
-\Log::info(2);
-
-        
             if ( !empty($pageTrans) ) {
 
                     $url = localization()->getLocalizedURL('en', $this->slug, [], false);
@@ -94,10 +99,11 @@ $pageTrans = Cache::rememberForever('public_post_translation_' . $page->id . '_'
                     SEOMeta::setTitle($title . $siteName);
                     SEOMeta::setDescription($description);
                     SEOMeta::setCanonical($url);
-
+                    
                     if ( $pageTrans->robots_meta ) {
                         SEOMeta::addMeta('robots', 'follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large', 'name');
                     }
+                    
                     else SEOMeta::addMeta('robots', 'noindex, follow', 'name');
 
                     //Facebook
@@ -117,55 +123,60 @@ $pageTrans = Cache::rememberForever('public_post_translation_' . $page->id . '_'
                                         ->setUrl($url);
 
                     $advanced = Advanced::firstOrFail();
-\Log::info(3);
+
          $sidebarCount = Sidebar::firstOrFail()->tool_count; // Cache the sidebar tool count to avoid multiple DB calls           
 $recent_posts = [];
 
-PublicPost::where('type', 'post')
+PublicPost::with(['translations']) // Eager load translations to prevent N+1 queries
+    ->where('type', 'post')
     ->where('post_status', true)
     ->orderBy('id', 'DESC')
-    ->chunk(100, function ($posts) use (&$recent_posts, $sidebarCount) {
+    ->chunk(50, function ($posts) use (&$recent_posts, $sidebarCount) {
         foreach ($posts as $page) {
+            if (count($recent_posts) >= $sidebarCount) {
+                return false; // Stop processing once limit is reached
+            }
+
             $translatedPage = $page->translate('en');
             if ($translatedPage) {
-                $translatedPage->slug = $page->slug;
-                $translatedPage->target = $page->target;
-                $translatedPage->featured_image = $page->featured_image;
+                // Assign attributes only if necessary
+                $translatedPage->slug           = $translatedPage->slug ?? $page->slug;
+                $translatedPage->target         = $translatedPage->target ?? $page->target;
+                $translatedPage->featured_image = $translatedPage->featured_image ?? $page->featured_image;
+
                 $recent_posts[] = $translatedPage;
-            }
-            if (count($recent_posts) >= $sidebarCount) {
-                return false; // Stop when enough records are collected
             }
         }
     });
 
 $recent_posts = array_filter($recent_posts); // Remove null values
-\Log::info(4);
-                  
+
 $popular_tools = [];
 
-PublicPost::where('type', 'tool')
+PublicPost::with(['translations']) // Eager load translations to prevent N+1 queries
+    ->where('type', 'tool')
     ->where('popular', true)
     ->where('tool_status', true)
     ->orderBy('id', 'DESC')
-    ->chunk(100, function ($tools) use (&$popular_tools, $sidebarCount) {
+    ->chunk(50, function ($tools) use (&$popular_tools, $sidebarCount) {
         foreach ($tools as $page) {
+            if (count($popular_tools) >= $sidebarCount) {
+                return false; // Stop processing when limit is reached
+            }
+
             $translatedPage = $page->translate('en');
             if ($translatedPage) {
-                $translatedPage->slug = $page->slug;
-                $translatedPage->target = $page->target;
-                $translatedPage->custom_tool_link = $page->custom_tool_link;
+                // Assign attributes only if needed
+                $translatedPage->slug             = $translatedPage->slug ?? $page->slug;
+                $translatedPage->target           = $translatedPage->target ?? $page->target;
+                $translatedPage->custom_tool_link = $translatedPage->custom_tool_link ?? $page->custom_tool_link;
+
                 $popular_tools[] = $translatedPage;
-            }
-            if (count($popular_tools) >= $sidebarCount) {
-                return false; // Stop when enough records are collected
             }
         }
     });
-
+\Log::error("sfsdf");
 $popular_tools = array_filter($popular_tools); // Remove null values
-
-                \Log::info("!!!");
                 return view('livewire.public.posts', [
                     'page'          => $page,
                     'general'       => $general,
@@ -190,7 +201,7 @@ $popular_tools = array_filter($popular_tools); // Remove null values
             
             } else abort(404);
 
-        
+      
 
     }
 

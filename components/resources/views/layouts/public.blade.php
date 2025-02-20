@@ -3,6 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="monetag" content="05a7dbf8261c140b6c48fa9429921477">
         <link rel="shortcut icon" href="{{ $header?->favicon }}">
 
         {!! SEO::generate() !!}
@@ -69,26 +70,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5B8MK59V"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
-<!-- Mgid Sensor -->
-<script type="text/javascript">
-    (function() {
-        var d = document, w = window;
-        w.MgSensorData = w.MgSensorData || [];
-        w.MgSensorData.push({
-            cid:898755,
-            project: "a.mgid.com"
-        });
-        var l = "a.mgid.com";
-        var n = d.getElementsByTagName("script")[0];
-        var s = d.createElement("script");
-        s.type = "text/javascript";
-        s.async = true;
-        var dt = !Date.now?new Date().valueOf():Date.now();
-        s.src = "https://" + l + "/mgsensor.js?d=" + dt;
-        n.parentNode.insertBefore(s, n);
-    })();
-</script>
-<!-- /Mgid Sensor -->
+
         @if ( $advanced->body_status && $advanced->insert_body != null )
           {!! $advanced->insert_body !!}
         @endif
@@ -134,7 +116,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                                 "></span>
 
                                 @if ( !empty($general->parallax_image) )
-                                  <img alt="{{ __($pageTrans->title) }}" class="position-absolute start-0 top-0 w-100 parallax-image {{ ($general->lazy_loading) ? 'lazyload' : '' }}" data-src="{{ $general->parallax_image }}" @if (!$general->lazy_loading) src="{{ $general->parallax_image }}" @endif style="filter: blur({{ $general->blur }}px)">
+                                  <img alt="{{ __($page->title) }}" class="position-absolute start-0 top-0 w-100 parallax-image {{ ($general->lazy_loading) ? 'lazyload' : '' }}" data-src="{{ $general->parallax_image }}" @if (!$general->lazy_loading) src="{{ $general->parallax_image }}" @endif style="filter: blur({{ $general->blur }}px)">
                                 @endif
 
                                 <div class="container position-relative zindex-1">
@@ -144,8 +126,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                                           <x-public.advertisement.area1 :advertisement="$advertisement" />
                                         @endif
 
-                                        <h1 class="display-5 fw-normal">{{ __($pageTrans->title) ? __($pageTrans->title) : $pageTrans->translations[0]->title  }}</h1>
-                                        <h2 class="fw-normal">{{ __($pageTrans->subtitle) ?  __($pageTrans->subtitle) :  $pageTrans->translations[0]->subtitle  }}</h2>
+                                        <h1 class="display-5 fw-normal">{{ __($page->title) ? __($page->title) : $page->translations[2]->title  }}</h1>
+                                        <h2 class="fw-normal">{{ __($page->subtitle) ?  __($page->subtitle) :  $page->translations[2]->subtitle  }}</h2>
 
                                         @if ( $page->ads_status && $advertisement->area2_status && $advertisement->area2 != null )
                                           <x-public.advertisement.area2 :advertisement="$advertisement" />
@@ -170,23 +152,21 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                                       <div class="card">
                                           @if ( !$general->parallax_status )
                                               <div class="card-header d-block">
-                                                    <h1 class="page-title">{{ __($pageTrans->title) }}</h1>
-                                                    <p class="mb-0">{{ __($pageTrans->subtitle) }}</p>
+                                                    <h1 class="page-title">{{ __($page->title) }}</h1>
+                                                    <p class="mb-0">{{ __($page->subtitle) }}</p>
                                               </div>
                                           @endif
 
                                           <div class="card-body {{ ($general->author_box_status) ? 'pb-0' : ''}}">
                                               @if ( Auth::user() && Auth::user()->is_admin )
                                                 <div class="d-flex justify-content-center mb-3">
-                                                  <a href="{{ route('admin.pages.translations.edit', $pageTrans->translations[0]['id']) }}" class="btn btn-primary">{{ __('Edit Page') }}</a>
+                                                  <a href="{{ route('admin.pages.translations.edit', $page->translations[2]['id']) }}" class="btn btn-primary">{{ __('Edit Page') }}</a>
                                                 </div>
                                               @endif
 
-                                              @if ($page->ads_status && isset($advertisement) && isset($advertisement->area4_status) && $advertisement->area4 != null)
-                                                <x-public.advertisement.area4 :advertisement="$advertisement" />
-                                              @endif
+                                             
 
-                                              {!! $pageTrans->description ? $pageTrans->description : $pageTrans->translations[0]->description   !!}
+                                              {!! $page->description ? $page->description : (isset($page->translations[2]) ? $page->translations[2]->description : '')   !!}
 
                                               @if ( $page->ads_status && $advertisement->area5_status && $advertisement->area5 != null )
                                                 <x-public.advertisement.area5 :advertisement="$advertisement" />
@@ -224,8 +204,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                                                         <i class="fab fa-facebook"></i>
                                                     </a>
 
-                                                    <a wire:ignore href="https://twitter.com/intent/tweet?text={{ $pageTrans->title }}&url={{ url()->current() }}&counturl={{ url()->current() }}"
-                                                        onclick="window.open('https://twitter.com/intent/tweet?text={{ $pageTrans->title }}&url={{ url()->current() }}&counturl={{ url()->current() }}','twitter','height=500,width=800,resizable=1,scrollbars=yes'); return false;"
+                                                    <a wire:ignore href="https://twitter.com/intent/tweet?text={{ $page->title }}&url={{ url()->current() }}&counturl={{ url()->current() }}"
+                                                        onclick="window.open('https://twitter.com/intent/tweet?text={{ $page->title }}&url={{ url()->current() }}&counturl={{ url()->current() }}','twitter','height=500,width=800,resizable=1,scrollbars=yes'); return false;"
                                                         aria-label="Twitter"
                                                         rel="noopener noreferrer nofollow"
                                                         target="_blank"
@@ -233,8 +213,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                                                         <i class="fab fa-twitter"></i>
                                                     </a>
 
-                                                    <a wire:ignore href="https://www.pinterest.com/pin-builder/?url={{ url()->current() }}&media={{ $page->featured_image }}&description={{ str_replace(' ', '%20', $pageTrans->title) }}"
-                                                        onclick="window.open('https://www.pinterest.com/pin-builder/?url={{ url()->current() }}&media={{ $page->featured_image }}&description={{ str_replace(' ', '%20', $pageTrans->title) }}','pinterest','height=500,width=800,resizable=1,scrollbars=yes'); return false;"
+                                                    <a wire:ignore href="https://www.pinterest.com/pin-builder/?url={{ url()->current() }}&media={{ $page->featured_image }}&description={{ str_replace(' ', '%20', $page->title) }}"
+                                                        onclick="window.open('https://www.pinterest.com/pin-builder/?url={{ url()->current() }}&media={{ $page->featured_image }}&description={{ str_replace(' ', '%20', $page->title) }}','pinterest','height=500,width=800,resizable=1,scrollbars=yes'); return false;"
                                                         aria-label="Pinterest"
                                                         rel="noopener noreferrer nofollow"
                                                         target="_blank"
@@ -242,8 +222,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                                                         <i class="fab fa-pinterest"></i>
                                                     </a>
 
-                                                    <a wire:ignore href="https://www.linkedin.com/shareArticle?mini=true&ro=true&title={{ $pageTrans->title }}&url={{ url()->current() }}"
-                                                        onclick="window.open('https://www.linkedin.com/shareArticle?mini=true&ro=true&title={{ $pageTrans->title }}&url={{ url()->current() }}','linkedin','height=500,width=800,resizable=1,scrollbars=yes'); return false;"
+                                                    <a wire:ignore href="https://www.linkedin.com/shareArticle?mini=true&ro=true&title={{ $page->title }}&url={{ url()->current() }}"
+                                                        onclick="window.open('https://www.linkedin.com/shareArticle?mini=true&ro=true&title={{ $page->title }}&url={{ url()->current() }}','linkedin','height=500,width=800,resizable=1,scrollbars=yes'); return false;"
                                                         aria-label="Linkedin"
                                                         rel="noopener noreferrer nofollow"
                                                         target="_blank"
@@ -251,8 +231,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                                                         <i class="fab fa-linkedin"></i>
                                                     </a>
 
-                                                    <a wire:ignore href="https://www.reddit.com/submit?url={{ url()->current() }}&title={{ str_replace(' ', '%20', $pageTrans->title) }}"
-                                                        onclick="window.open('https://www.reddit.com/submit?url={{ url()->current() }}&title={{ str_replace(' ', '%20', $pageTrans->title) }}','reddit','height=500,width=800,resizable=1,scrollbars=yes'); return false;"
+                                                    <a wire:ignore href="https://www.reddit.com/submit?url={{ url()->current() }}&title={{ str_replace(' ', '%20', $page->title) }}"
+                                                        onclick="window.open('https://www.reddit.com/submit?url={{ url()->current() }}&title={{ str_replace(' ', '%20', $page->title) }}','reddit','height=500,width=800,resizable=1,scrollbars=yes'); return false;"
                                                         aria-label="Reddit"
                                                         rel="noopener noreferrer nofollow"
                                                         target="_blank"

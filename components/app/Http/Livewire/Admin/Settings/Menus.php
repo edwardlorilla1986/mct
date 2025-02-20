@@ -31,7 +31,13 @@ class Menus extends Component
     public function mount()
     {
         $this->menus       = MS::with('children')->where(['parent_id' => 'id'])->orderBy('sort','ASC')->get()->toArray();
-        $this->pages       = Page::orderBy('id', 'DESC')->get()->toArray();
+        $this->pages = [];
+        Page::orderBy('id', 'DESC')->chunk(100, function ($pages) {
+            foreach ($pages as $page) {
+                $this->pages[] = $page->toArray();
+            }
+        });
+
         $this->fontawesome = Storage::disk('local')->get('fontawesome.json');
     }
 
